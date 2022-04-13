@@ -14,13 +14,13 @@ Set the jna library path, where the MediaInfo binaries are. This can be done thr
 `System.setProperty("jna.library.path", "path-to-binaries");` or with this JRE command line: `-Djna.library.path=path-to-binaries`
 
 # Process
-> Initialize main glfw window.
+> Initialize main  glfw window / gl context.
 
-> Initialize second hidden glfw window.
+> Initialize second hidden glfw window / gl context.
 
 > Run the video through vlcj.
 
-> Every frame copy the texture back from vlcj.
+> Every frame copy the texture back from vlcj to the secondary context.
 
 > Use the texture in your renderer.
 
