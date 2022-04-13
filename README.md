@@ -1,8 +1,11 @@
 # LWJGL 3 and vlcj 5 interop
 
 This example plays a video through vlcj and lets you use it as a texuture in lwjgl.
+Based on the [caprica demo](https://github.com/caprica/vlcj-lwjgl-demo). The difference between the two demos is that that one draws the video to the main window, but this one draws it to a texture. This gives a lot of flexibility as to how to approach displaying it.
 
-The steps are:
+For instance, you can display it on a quad in a 3d engine or composite multiple videos at once in a VJ tool.
+
+# Process
 > Initialize main glfw window.
 
 > Initialize second hidden glfw window.
