@@ -1,6 +1,8 @@
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.GL_VERTEX_ARRAY_BINDING;
@@ -42,6 +44,16 @@ public class Engine {
 			video.getCurrFrame();
 		}
 
+		// Destroy everything on close.
+		video.destroy();
+
+		// Free the window callbacks and destroy the window
+		glfwFreeCallbacks(glfwWindow);
+		glfwDestroyWindow(glfwWindow);
+
+		// Terminate GLFW and free the error callback
+		glfwTerminate();
+		glfwSetErrorCallback(null).free();
 	}
 
 	private void initGlfwAndLwjgl(){

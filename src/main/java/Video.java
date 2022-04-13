@@ -16,6 +16,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
@@ -89,6 +90,17 @@ public class Video {
 		contextSemaphore.release();
 	}
 
+	public void destroy(){
+		// We need to make sure the callbacks stop before we disappear, otherwise a fatal JVM crash may occur
+		mediaPlayer.release();
+		mediaPlayerFactory.release();
+
+		// Free the window callbacks and destroy the window
+		glfwFreeCallbacks(glfwWindowVideo);
+		glfwDestroyWindow(glfwWindowVideo);
+	}
+
+
 	public void getCurrFrame()  {
 		try {
 			// Block the vlc glfw context.
@@ -128,7 +140,6 @@ public class Video {
 			// Set up GLFW and OpenGL hints.
 			glfwDefaultWindowHints();
 			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 			glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
