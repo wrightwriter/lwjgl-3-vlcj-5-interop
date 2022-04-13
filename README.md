@@ -19,5 +19,5 @@ For instance, you can display it on a quad in a 3d engine or composite multiple 
 # Double buffering
 
 This approach can be made more responsive by using double buffering, but that would require more memory.
-In any case, if you can afford it, double buffering is very much recommended. It lets you not block the main thread every time you copy the texture from vlcj.
+In any case, if you can afford it, double buffering is very much recommended. It lets you not block the render thread every time you copy the texture from vlcj.
 
