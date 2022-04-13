@@ -25,10 +25,10 @@ import static org.lwjgl.opengl.GL45.glCheckNamedFramebufferStatus;
 public class Video {
 	// Do NOT use this framebuffer on another context.
 	// Nvidia driver permits it, but it is undefined behaviour.
-	// Use the texture instead.
+	// Use the texture below instead.
 	private int framebuffer;
 
-	// Shared texture, can be used in the rendering context.
+	// Shared texture, will be used in the rendering context.
 	public int texture;
 
 	// Media player can be used to control the video playback.
@@ -37,10 +37,10 @@ public class Video {
 	private VideoEngineVideoSurface videoSurface;
 	private VideoEngineCallback videoEngineCallback;
 
-	// Video mrl.
+	// Semaphore for ownership of the glfw/lwjgl context.
 	private final Semaphore contextSemaphore = new Semaphore(0);
 
-	// Thread which copies the video texture from VLC.
+	// Worker thread which copies the video texture from VLC.
 	private final VideoManagerThread videoManagerThread;
 
 	// Video resolution.
@@ -50,9 +50,9 @@ public class Video {
 	private final ReentrantLock lock = new ReentrantLock();
 	private final Condition condInitialized = lock.newCondition();
 
-	// The vlc context.
+	// The glfw context used by vlcj.
 	private long glfwWindowVideo;
-	// The main context.
+	// The glfw context used by the main thread.
 	private final long glfwWindowMain;
 
 	// Video mrl.
@@ -63,8 +63,7 @@ public class Video {
 		this.mrl = mrl;
 
 		// Get file resolution.
-		System.setProperty("jna.library.path", "D:\\Programming\\School\\JavaGL2\\src");
-//		System.setProperty("jna.library.path", "-- PATH TO THE MEDIAINFO BINARY HERE --");
+		// Make sure to have set the jna library location.
 		final Section mediaInfo = MediaInfo.mediaInfo(mrl).first("Video");
 		resolution[0] = mediaInfo.integer("Width");
 		resolution[1] = mediaInfo.integer("Height");
@@ -96,6 +95,7 @@ public class Video {
 			contextSemaphore.acquire();
 
 			// glFinish() needs to be done when doing resource sharing between OpenGL contexts.
+			// This is described in the OpenGL specification.
 			GL46.glFinish();
 
 			final long prevContext = glfwGetCurrentContext();

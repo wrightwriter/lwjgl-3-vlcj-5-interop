@@ -11,19 +11,24 @@ public class Engine {
 		engine.start();
 	}
 
+	// The main glfw window.
 	private Long glfwWindow;
+
+	// The video.
 	private final Video video;
 
 
 	public Engine(){
 		initGlfwAndLwjgl();
 
-		video = new Video("D:\\VJ vids\\human\\pexels-darina-belonogova-7551560.mp4", glfwWindow);
+		// Load a video.
+		video = new Video("D:\\video.mp4", glfwWindow);
 	}
 
 
 	private void start(){
-		setupSimpleFullscreenQuadToShowVideoTexture();
+		// Set up a simple textured fullscreen quad to display the video on.
+		setupTexturedFullScreenQuad();
 
 
 		while(!GLFW.glfwWindowShouldClose(glfwWindow)){
@@ -33,14 +38,14 @@ public class Engine {
 			GLFW.glfwSwapBuffers(glfwWindow);
 			GLFW.glfwPollEvents();
 
-			// Get the current video frame from vlcj.
+			// Get the current video frame as texture from vlcj.
 			video.getCurrFrame();
 		}
 
 	}
 
 	private void initGlfwAndLwjgl(){
-		if(!GLFW.glfwInit()) { System.out.println("Unable to initialize GLFW");  }
+		if(!GLFW.glfwInit()) { throw new RuntimeException ("Unable to initialize GLFW");  }
 
 		// Set the GL version  and window hints.
 		GLFW.glfwDefaultWindowHints();
@@ -49,9 +54,7 @@ public class Engine {
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE);
-		GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_TRUE);
-
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
 
 		// Create window.
 		glfwWindow = GLFW.glfwCreateWindow(800,800, "lwjgl-vlcj", 0L,0L);
@@ -69,7 +72,8 @@ public class Engine {
 		GL46.glBindVertexArray(GL46.glCreateVertexArrays());
 	}
 
-	private void setupSimpleFullscreenQuadToShowVideoTexture(){
+	private void setupTexturedFullScreenQuad(){
+		// Create fullscreen quad VBO.
 		final float[] quadTriangleStrip = {-1f, -1f, 1f, -1f, -1f, 1f, 1f, 1f};
 		final int vbo = GL46.glCreateBuffers();
 		final int vao = GL46.glGetInteger(GL_VERTEX_ARRAY_BINDING);
@@ -79,23 +83,23 @@ public class Engine {
 		GL46.glVertexArrayAttribFormat( vao, 0, 2, GL_FLOAT, false,0 );
 		GL46.glVertexArrayAttribBinding(vao,0, 0);
 
+		// Create shader to display the texture.
 		final String vertShaderString =
-				"#version 430 \n" +
-						"in vec2 p; " +
-						"out vec2 vUv; " +
-						"void main(){ " +
-						"gl_Position = vec4(p,0,1); " +
-						"vUv = (p.xy + 1.)/2.; " +
-						"}" ;
+			"#version 430 \n" +
+			"in vec2 p; " +
+			"out vec2 vUv; " +
+			"void main(){ " +
+				"gl_Position = vec4(p,0,1); " +
+				"vUv = (p.xy + 1.)/2.; " +
+			"}" ;
 		final String fragShaderString =
-				"#version 430 \n" +
-						"in vec2 vUv;" +
-						"uniform sampler2D tex;" +
-						"out vec4 C;" +
-						"void main(){" +
-//				"C = vec4(vUv.xy,1,1);" +
-						"C = texture(tex, vUv);" +
-						"}" ;
+			"#version 430 \n" +
+			"in vec2 vUv;" +
+			"uniform sampler2D tex;" +
+			"out vec4 C;" +
+			"void main(){" +
+				"C = texture(tex, vUv);" +
+			"}" ;
 
 		final int fragPid = GL46.glCreateShader(GL_FRAGMENT_SHADER);
 		final int vertPid = GL46.glCreateShader(GL_VERTEX_SHADER);
@@ -112,14 +116,9 @@ public class Engine {
 
 		GL46.glLinkProgram(shaderProgram);
 
-		if (GL20.glGetProgrami(shaderProgram, GL20.GL_LINK_STATUS) == 0) {
-			String log = GL20.glGetProgramInfoLog(shaderProgram, 1024);
-			System.err.println(log);
-		}
-
-
 		GL46.glUseProgram(shaderProgram);
 
+		// Bind video texture to texture unit 0.
 		GL46.glBindTextureUnit(0, video.texture);
 		GL46.glUniform1i(GL46.glGetUniformLocation(shaderProgram, "tex"),0);
 	}
