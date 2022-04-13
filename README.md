@@ -8,7 +8,7 @@ For instance, you can display it on a quad in a 3d engine or composite multiple 
 # Prerequisite 
 Install vlc 4.0.0 as described in the [caprica demo](https://github.com/caprica/vlcj-lwjgl-demo).
 
-Download the [MediaInfo](https://mediaarea.net/en/MediaInfo/Download/Windows) binaries to get the video metadata and resolution at runtime with the `vlcj-info` bindings.
+Download the [MediaInfo](https://mediaarea.net/en/MediaInfo/Download/Windows) binaries to get the video metadata and resolution at runtime with the [vlcj-info](https://github.com/caprica/vlcj-info) bindings.
 
 Set the jna library path, where the MediaInfo binaries are. This can be done through code: 
 `System.setProperty("jna.library.path", "path-to-binaries");` or with this JRE command line: `-Djna.library.path=path-to-binaries`
