@@ -1,9 +1,17 @@
 # LWJGL 3 and vlcj 5 interop
 
 This example plays a video through vlcj and lets you use it as a texuture in lwjgl.
-Based on the [caprica demo](https://github.com/caprica/vlcj-lwjgl-demo). The difference between the two demos is that that one draws the video to the main window and this one draws it to a texture. This gives a lot of flexibility as to how to approach displaying it.
+Based on the [caprica demo](https://github.com/caprica/vlcj-lwjgl-demo). The difference between the two demos is that that one draws the video to the main window and this one draws it to a texture. 
 
+This gives a lot of flexibility as to how to approach displaying it.
 For instance, you can display it on a quad in a 3d engine or composite multiple videos at once in a VJ tool.
+# Prerequisite 
+Install vlc 4.0.0 as described in the [caprica demo](https://github.com/caprica/vlcj-lwjgl-demo).
+
+Download the [MediaInfo](https://mediaarea.net/en/MediaInfo/Download/Windows) binaries to get the video metadata and resolution at runtime.
+
+Set the jna library path, where the MediaInfo binaries are. This can be done through code: 
+`System.setProperty("jna.library.path", "path-to-binaries");` or with this JRE command line: `-Djna.library.path=path-to-binaries`
 
 # Process
 > Initialize main glfw window.
