@@ -4,9 +4,13 @@ This example plays a video through vlcj and lets you use it as a texuture in lwj
 
 The steps are:
 > Initialize main glfw window.
+
 > Initialize second hidden glfw window.
+
 > Run the video through vlcj.
+
 > Every frame copy the texture back from vlcj.
+
 > Use the texture in your renderer.
 
 # Double buffering
